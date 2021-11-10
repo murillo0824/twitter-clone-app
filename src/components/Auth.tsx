@@ -1,4 +1,8 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { auth, provider, storage } from "../firebase";
+
+
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,22 +17,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import SendIcon from "@material-ui/icons/Send";
+import CameraIcon from "@material-ui/icons/Camera";
+import EmailIcon from "@material-ui/icons/Email";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+
+import styles from './Auth.module.css'
+
 
 const theme = createTheme();
 
-export default function SignInSide() {
+const Auth:React.FC = ()=> {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,6 +37,10 @@ export default function SignInSide() {
       password: data.get('password'),
     });
   };
+  const signInGoogle = async () =>{
+    await auth.signInWithPopup(provider).catch((err) => alert(err));
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -49,7 +52,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',
+            backgroundImage: 'url(https://images.unsplash.com/photo-1636482095080-4033a0cd51de?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=687&q=80)',
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -94,10 +97,7 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
+              
               <Button
                 type="submit"
                 fullWidth
@@ -106,19 +106,18 @@ export default function SignInSide() {
               >
                 Sign In
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-              <Copyright sx={{ mt: 5 }} />
+
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={signInGoogle}
+              >
+                Sign In with Google
+              </Button>
+              
+              
+              
             </Box>
           </Box>
         </Grid>
@@ -126,3 +125,5 @@ export default function SignInSide() {
     </ThemeProvider>
   );
 }
+
+export default Auth;

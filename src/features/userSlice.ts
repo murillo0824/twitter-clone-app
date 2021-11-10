@@ -6,7 +6,7 @@ export const userSlice = createSlice({
   initialState: {
     user: {
       uid: "",
-      photoUrl: "",
+      photourl: "",
       displayName: "",
     },
   },
@@ -16,7 +16,7 @@ export const userSlice = createSlice({
       state.user = action.payload;
     },
     logout: (state) => {
-      state.user = { uid: "", photoUrl: "", displayName: "" };
+      state.user = { uid: "", photourl: "", displayName: "" };
     },
   },
 });
