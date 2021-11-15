@@ -9,7 +9,7 @@ import { useState } from "react";
 import firebase from "firebase/app";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
-const Tweetinput = () => {
+const Tweetinput:React.FC = () => {
   const user = useSelector(selectUser);
   const [tweetMessage, setTweetMessage] = useState("");
   const [tweetImage, setTweetImage] = useState<File | null>(null);
