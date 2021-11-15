@@ -23,6 +23,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 import styles from "./Auth.module.css";
+import { IconButton } from "@mui/material";
 
 const theme = createTheme();
 
@@ -30,48 +31,47 @@ const Auth: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
-  const [avaterImage, setAvaterImage] = useState<File |null>(null);
+  const [avaterImage, setAvaterImage] = useState<File | null>(null);
 
   const dispatch = useDispatch();
 
-  const onChangeImageHandler = (e:React.ChangeEvent<HTMLInputElement>)=>{
-    if(e.target.files![0]){
+  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files![0]) {
       // files  に入っている！は　type script にnull の可能性がないことを示すことによってエラーを回避している
       setAvaterImage(e.target.files![0]);
-      e.target.value="";
+      e.target.value = "";
     }
-  }
+  };
 
   const [isLogin, setIsLogin] = useState(true);
-  
 
   const signInEmail = async () => {
     await auth.signInWithEmailAndPassword(email, password);
   };
 
   const signUpEmail = async () => {
-    const authUser = await auth.createUserWithEmailAndPassword(email,password);
+    const authUser = await auth.createUserWithEmailAndPassword(email, password);
     let url = "";
-    if (avaterImage){
-      const S = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    if (avaterImage) {
+      const S =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       const N = 16;
       const randamChar = Array.from(crypto.getRandomValues(new Uint32Array(N)))
-        .map((n)=> S[n % S.length])
+        .map((n) => S[n % S.length])
         .join("");
 
       const fileName = randamChar + "_" + avaterImage.name;
-
 
       await storage.ref(`avatars/${fileName}`).put(avaterImage);
       url = await storage.ref("avatars").child(fileName).getDownloadURL();
     }
     await authUser.user?.updateProfile({
-      displayName:userName,
-      photoURL: url
+      displayName: userName,
+      photoURL: url,
     });
     dispatch(
       updateUserProfile({
-        displayName:userName,
+        displayName: userName,
         photoUrl: url,
       })
     );
@@ -133,6 +133,41 @@ const Auth: React.FC = () => {
               onSubmit={handleSubmit}
               sx={{ mt: 1 }}
             >
+              {!isLogin && (
+                <>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="User Name"
+                    name="username"
+                    autoComplete="username"
+                    autoFocus
+                    value={userName}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setUserName(e.target.value);
+                    }}
+                  />
+
+                  <Box textAlign="center">
+                    <IconButton>
+                      <label>
+                        <AccountCircleIcon
+                          fontSize="large"
+                          className={
+                            avaterImage
+                              ? styles.login_addIconLoaded
+                              : styles.login_addIcon
+                          }
+                         />
+                         <input type="file" className={styles.login_hiddenIcon} onChange={onChangeImageHandler}/>
+                      </label>
+                    </IconButton>
+                  </Box>
+
+                </>
+              )}
               <TextField
                 margin="normal"
                 required
@@ -146,7 +181,6 @@ const Auth: React.FC = () => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setEmail(e.target.value);
                 }}
-                
               />
               <TextField
                 margin="normal"
@@ -164,7 +198,6 @@ const Auth: React.FC = () => {
               />
 
               <Button
-                
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
@@ -172,19 +205,24 @@ const Auth: React.FC = () => {
                 onClick={
                   isLogin
                     ? async () => {
-                      try{
-                        await signInEmail();
-                      } catch(err:any){
-                        alert(err.message)
+                        try {
+                          await signInEmail();
+                        } catch (err: any) {
+                          alert(err.message);
+                        }
                       }
-                    }
-                  : async () =>{
-                    try {
-                      await signUpEmail();
-                    } catch(err:any){
-                      alert(err.message)
-                    }
-                  }
+                    : async () => {
+                        try {
+                          await signUpEmail();
+                        } catch (err: any) {
+                          alert(err.message);
+                        }
+                      }
+                }
+                disabled={
+                  isLogin
+                    ? !email || password.length < 6 
+                    : !userName || !email || password.length < 6 || !avaterImage
                 }
               >
                 {isLogin ? "Sign in" : "Register"}
@@ -195,14 +233,13 @@ const Auth: React.FC = () => {
                   <span className={styles.login_reset}>Forgot password?</span>
                 </Grid>
                 <Grid item>
-                  <span 
-                  onClick={()=> setIsLogin(!isLogin)}
-                  className={styles.login_toggleMode}
+                  <span
+                    onClick={() => setIsLogin(!isLogin)}
+                    className={styles.login_toggleMode}
                   >
-                  {isLogin ? "Create new account?" : "Back to login"}
+                    {isLogin ? "Create new account?" : "Back to login"}
                   </span>
                 </Grid>
-
               </Grid>
 
               <Button
