@@ -71,7 +71,7 @@ const Tweetinput:React.FC = () => {
   return (
     <>
       <form onSubmit={sendTweet}>
-        <div className={styles.tweet_avatar}>
+        <div className={styles.tweet_form}>
           <Avatar
             className={styles.tweet_avatar}
             src={user.photoUrl}

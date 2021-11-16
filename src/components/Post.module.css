@@ -2,6 +2,7 @@
   display: flex;
   align-items: flex-start;
   padding-bottom: 10px;
+  box-sizing: border-box;
 }
 .post_avatar {
   padding: 20px;
@@ -11,6 +12,7 @@
 .post_body {
   flex: 1;
   padding: 10px;
+  /* box-sizing: border-box; */
 }
 .post_header > h3 {
   font-size: 15px;
