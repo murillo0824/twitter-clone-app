@@ -1,7 +1,8 @@
 .app{
   display: flex;
   height: 100vh;
-  padding: 30px 80px;
+  /* padding: 30px 80px; */
+  padding:0 30px;
   
   background-color: #444447;
 }
